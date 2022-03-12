@@ -9,20 +9,32 @@ using namespace ariel;
 #include <vector>
 using namespace std;
 
+const int ASCI_START = 33;
+const int ASCI_END = 126;
+const int MAX = 100000;
 string ariel::mat(int col, int row, char a, char b)
 {
-    if (col < 0 || row < 0)
+
+    if (row % 2 == 0 || row < 0 || (float)row != (float)(int)row || row > MAX)
     {
-        throw invalid_argument("row and col size must be positive");
+        throw invalid_argument("Col Size Must be positive odd integer." + to_string(row));
         return "";
     }
 
-    if (col % 2 == 0 || row % 2 == 0)
+    if (col % 2 == 0 || col < 0 || (float)col != (float)(int)col || col > MAX)
     {
-        throw invalid_argument("row and col size must be odd");
-        return "";
+        throw invalid_argument("Col Size Must be positive odd integer." + to_string(col));
     }
 
+    if (a < ASCI_START || a > ASCI_END)
+    {
+        throw invalid_argument("First Symbol is not a valid ascii symbol see ascii code 33-126. \nSymbol is : " + to_string(a));
+    }
+
+    if (b < ASCI_START || b > ASCI_END)
+    {
+        throw invalid_argument("Second Symbol is not a valid ascii symbol see ascii code 33-126. \nSymbol is : " + to_string(b));
+    }
     string mat;
     string temp;
     int mid = (row / 2) + 1;
@@ -60,7 +72,6 @@ string ariel::mat(int col, int row, char a, char b)
         sym += 1;
     }
 
-    
     i = 0;
     int next = 1;
     while (true)
@@ -81,3 +92,31 @@ string ariel::mat(int col, int row, char a, char b)
 
     return mat;
 }
+
+// int main(int argc, char const *argv[])
+// {
+
+//     string mat_a = mat(17, 15, '@', '#');
+
+//     for (size_t i = 0; i < mat_a.size(); i++)
+//     {
+//         if (mat_a[i] == '@')
+//         {
+//             string colorized_sym = "\x1B[32m";
+//             colorized_sym+=mat_a[i];
+//             cout << colorized_sym;
+//         }
+
+//         else if (mat_a[i] == '#')
+//         {
+//             string colorized_sym = "\x1B[31m";
+//             colorized_sym+=mat_a[i];
+//             cout << colorized_sym;        }
+
+//         else
+//             cout << mat_a[i];
+//     }
+
+//     cout << endl;
+//     return 0;
+// }
