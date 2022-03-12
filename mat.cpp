@@ -15,6 +15,7 @@ const int MAX = 100000;
 string ariel::mat(int col, int row, char a, char b)
 {
 
+// Checking input for errors or size that can cause overflow.
     if (row % 2 == 0 || row < 0 || (float)row != (float)(int)row || row > MAX)
     {
         throw invalid_argument("Col Size Must be positive odd integer." + to_string(row));
@@ -25,7 +26,7 @@ string ariel::mat(int col, int row, char a, char b)
     {
         throw invalid_argument("Col Size Must be positive odd integer." + to_string(col));
     }
-
+// Checking valid ascii symbols
     if (a < ASCI_START || a > ASCI_END)
     {
         throw invalid_argument("First Symbol is not a valid ascii symbol see ascii code 33-126. \nSymbol is : " + to_string(a));
@@ -35,6 +36,8 @@ string ariel::mat(int col, int row, char a, char b)
     {
         throw invalid_argument("Second Symbol is not a valid ascii symbol see ascii code 33-126. \nSymbol is : " + to_string(b));
     }
+
+// init parameters.
     string mat;
     string temp;
     int mid = (row / 2) + 1;
@@ -42,7 +45,7 @@ string ariel::mat(int col, int row, char a, char b)
     int i = 0;
     int sym = 0;
 
-    /// init row
+    /// init first row with first symbol .
     for (size_t i = 0; i < col; i++)
     {
         temp += a;
@@ -50,10 +53,15 @@ string ariel::mat(int col, int row, char a, char b)
 
     i = 0;
 
+/*  loop going from start row to the middle of the mat, the mat rows returns themselves after the middle row.
+    so we will only need to compute them once.
+    
+    each iteration the loop goes from the i'th place til the col_size - i and turn the symbol ,
+    while every line starts from the previous line that computed in the last iteration. 
+    */
+    
     while (i < mid)
     {
-        // cout << i << "temp = " << temp << '\n'
-        //      << endl;
         for (int j = i; j < col - i; j++)
         {
             if (sym % 2 == 0)
@@ -65,13 +73,17 @@ string ariel::mat(int col, int row, char a, char b)
                 temp.at(j) = b;
             }
         }
-        // cout << i << "temp after = " << temp << '\n'
-        //      << endl;
+
         temp_array.push_back(temp);
         i++;
         sym += 1;
     }
 
+
+/*  BUILDING THE STRING
+    re-init i for another while loop , a loop going from the start of the string vector to its end , adding the vector to a new string.
+    the loop goes til the end of the vector adding the strings than go back to the start whice help us save the time of computition*/
+    
     i = 0;
     int next = 1;
     while (true)
@@ -92,31 +104,3 @@ string ariel::mat(int col, int row, char a, char b)
 
     return mat;
 }
-
-// int main(int argc, char const *argv[])
-// {
-
-//     string mat_a = mat(17, 15, '@', '#');
-
-//     for (size_t i = 0; i < mat_a.size(); i++)
-//     {
-//         if (mat_a[i] == '@')
-//         {
-//             string colorized_sym = "\x1B[32m";
-//             colorized_sym+=mat_a[i];
-//             cout << colorized_sym;
-//         }
-
-//         else if (mat_a[i] == '#')
-//         {
-//             string colorized_sym = "\x1B[31m";
-//             colorized_sym+=mat_a[i];
-//             cout << colorized_sym;        }
-
-//         else
-//             cout << mat_a[i];
-//     }
-
-//     cout << endl;
-//     return 0;
-// }
