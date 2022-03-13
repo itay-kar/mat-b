@@ -7,7 +7,7 @@ using namespace ariel;
 #include <stdexcept>
 #include <iostream>
 #include <vector>
-
+#include <unistd.h>
 using namespace std;
 
 void print_mat(string mat, string color_a, string color_b, char sym_a, char sym_b)
@@ -57,8 +57,13 @@ vector<string> init_colors()
 
 int main(int argc, char const *argv[])
 {
+
+    int col, row;
+    char sym_a, sym_b;
+    int color_a, color_b;
     vector<string> colors = init_colors();
-    cout << "Hello, Welcome to the mat printing program.\n\nThis program will print a mat in the sizes and symbols of your choice.\n" << endl;
+    cout << "Hello, Welcome to the mat printing program.\n\nThis program will print a mat in the sizes and symbols of your choice.\n"
+         << endl;
     while (true)
     {
         cout << "To print a new mat please enter 1 , to exit the program please enter 0" << endl;
@@ -67,10 +72,6 @@ int main(int argc, char const *argv[])
 
         if (cmd == 1)
         {
-            int col, row;
-            char sym_a, sym_b;
-            int color_a, color_b;
-
             srand(time(NULL));
             color_a = (rand() % 14);
             color_b = (rand() % 14);
@@ -105,8 +106,50 @@ int main(int argc, char const *argv[])
             exit(0);
         }
 
-        else
-            cout << "Not a valid command enter 1 to print a new mat or 0 to exit" << endl;
+        else if (cmd == 2)
+        {
+            cout << colors.at(3) << "\nWelcome to my mat shop! \nYou can choose a mat the you like and ask the seller for it.\n"
+                 << endl;
+            int num_of_mats = 20;
+            int resume = 0;
+
+            while (true)
+            {
+                srand(time(NULL));
+                row = 2 * (rand() % 10) + 1;
+                col = 2 * (rand() % 25) + 1;
+                sym_a = (rand() % 93) + 33;
+                sym_b = (rand() % 93) + 33;
+
+                color_a = (rand() % 14);
+                color_b = (rand() % 14);
+
+                while (color_a == color_b)
+                {
+                    color_b = (rand() % 14);
+                }
+
+                string store_mat = mat(col, row, sym_a, sym_b);
+                print_mat(store_mat, colors.at(color_a), colors.at(color_b), sym_a, sym_b);
+                resume += 1;
+
+                if(resume == 5){
+                    cout << "\x1B[0m" << endl;
+                cout << "enter 1 to see more mats or 9 to stop.\n"
+                     << endl;
+                scanf("%d", &resume);
+                if (resume == 9)
+                {
+                    break;
+                }
+                else resume = 0;
+                }
+                
+                sleep(1);
+            }
+        }
+
+        cout << "Not a valid command enter 1 to print a new mat or 0 to exit" << endl;
     }
 
     return 0;
