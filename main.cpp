@@ -8,6 +8,7 @@ using namespace ariel;
 #include <iostream>
 #include <vector>
 #include <unistd.h>
+#include <thread>
 using namespace std;
 
 void print_mat(string mat, string color_a, string color_b, char sym_a, char sym_b)
@@ -55,6 +56,17 @@ vector<string> init_colors()
     return colors;
 };
 
+void start_music()
+{
+    try{
+    system("aplay music.wav");
+    }
+
+    catch (exception e){
+        terminate();
+        return;
+    }
+}
 int main(int argc, char const *argv[])
 {
 
@@ -66,7 +78,7 @@ int main(int argc, char const *argv[])
          << endl;
     while (true)
     {
-        cout << "To print a new mat please enter 1 , to exit the program please enter 0" << endl;
+        cout << "To enter mat store press 2.\nTo print a new custom mat please enter 1 \nto exit the program please enter 0" << endl;
         int cmd = 2;
         scanf("%d", &cmd);
 
@@ -108,6 +120,8 @@ int main(int argc, char const *argv[])
 
         else if (cmd == 2)
         {
+            thread c = thread(start_music);
+            sleep(1);
             cout << colors.at(3) << "\nWelcome to my mat shop! \nYou can choose a mat the you like and ask the seller for it.\n"
                  << endl;
             int num_of_mats = 20;
@@ -133,23 +147,25 @@ int main(int argc, char const *argv[])
                 print_mat(store_mat, colors.at(color_a), colors.at(color_b), sym_a, sym_b);
                 resume += 1;
 
-                if(resume == 5){
-                    cout << "\x1B[0m" << endl;
-                cout << "enter 1 to see more mats or 9 to stop.\n"
-                     << endl;
-                scanf("%d", &resume);
-                if (resume == 9)
+                if (resume == 5)
                 {
-                    break;
+                    cout << "\x1B[0m" << endl;
+                    cout << "enter 1 to see more mats or 9 to stop.\n"
+                         << endl;
+                    scanf(" %d", &resume);
+                    if (resume == 9)
+                    {
+                        system("kill `pidof aplay`");
+                        c.join();
+                        break;
+                    }
+                    else
+                        resume = 0;
                 }
-                else resume = 0;
-                }
-                
+
                 sleep(1);
             }
         }
-
-        cout << "Not a valid command enter 1 to print a new mat or 0 to exit" << endl;
     }
 
     return 0;
